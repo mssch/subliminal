@@ -10,7 +10,7 @@ from ..cache import region, SHOW_EXPIRATION_TIME
 from ..exceptions import ConfigurationError, AuthenticationError, DownloadLimitExceeded, ProviderError
 from ..subtitle import Subtitle, fix_line_endings, compute_guess_properties_matches
 from ..video import Episode
-
+from ..api import RANDOM_USER_AGENT
 
 logger = logging.getLogger(__name__)
 babelfish.language_converters.register('addic7ed = subliminal.converters.addic7ed:Addic7edConverter')
@@ -86,7 +86,11 @@ class Addic7edProvider(Provider):
 
     def initialize(self):
         self.session = requests.Session()
-        self.session.headers = {'User-Agent': 'Subliminal/%s' % __version__.split('-')[0]}
+        #self.session.headers = {'User-Agent': 'Subliminal/%s' % __version__.split('-')[0]}
+        self.session.headers = {
+            'User-Agent': RANDOM_USER_AGENT,
+            'Referer': self.server,
+        }
         # login
         if self.username is not None and self.password is not None:
             logger.debug('Logging in')
